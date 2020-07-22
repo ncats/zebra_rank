@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>NCATS Zebra Rank</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta property="og:url" content="{{ request.get_full_path }}"/>
+    {% if title %}
+    <meta property="og:title" content="{{ title }}"/>
+    {% else %}
+    <meta property="og:title" content="NCATS Zebra Rank"/>
+    {% endif %}
+    <meta property="og:description" content="NCATS Zebra Rank is a
+                    prototype to rank rare diseases based on specified phenotypes."/>
+    <meta property="og:site_name" content="NCATS Zebra Rank"/>
+    <link rel="icon" type="image/vnd.microsoft.icon"
+          href="https://ncats.nih.gov/sites/all/themes/ncats-2014/favicon.ico">
+    {% load static %}
+    <link type="text/css" href="{% static 'vendor/@fortawesome/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+    <link type="text/css" href="{% static 'css/bootstrap-table.min.css' %}" rel="stylesheet">
+    <link type="text/css" href="{% static 'css/neumorphism.css' %}" rel="stylesheet">
+  </head>
+
+  <body>
+    <header class="header-global">
+      <nav id="navbar-main" aria-label="Primary navigation"
+           class="navbar navbar-main navbar-expand-lg navbar-theme-primary headroom navbar-light">
+        <div class="container position-relative">
+          <a class="navbar-brand shadow-soft py-2 px-3 
+                    rounded border border-light mr-lg-4"
+             href="https://ncats.nih.gov">
+            <img class="navbar-brand"
+                 src="https://ncats.nih.gov/sites/all/themes/ncats-2014/images/assets/ncats-logo.png"
+                 alt="NCATS Logo">
+          </a>
+          <div class="navbar-collapse collapse" id="navbar_global">
+            <div class="navbar-collapse-header">
+              <div class="row">
+                <div class="col-6 collapse-brand">
+                  <a href="https://ncats.nih.gov"
+                     class="navbar-brand shadow-soft py-2 px-3 rounded 
+                           border border-light">
+                    <img src="https://ncats.nih.gov/sites/all/themes/ncats-2014/images/assets/ncats-logo.png" alt="NCATS Logo">
+                  </a>
+                </div>
+                <div class="col-6 collapse-close">
+                  <a href="#navbar_global" class="fas fa-times"
+                     data-toggle="collapse" data-target="#navbar_global"
+                     aria-controls="navbar_global"
+                     aria-expanded="false" title="close"
+                     aria-label="Toggle navigation"></a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main role="main" class="container">
+      {% if errors %}
+      {% for error in errors %}
+      <div class="alert alert-danger" role="alert">
+        <p class="mb-3">{{ error.message }}</p>
+        {% if error.debug %}
+        <pre class="alert-pre border bg-light p-2"><code>{{ error.debug }}</code></pre>
+        {% endif %}
+      </div>
+      {% endfor %}
+      {% endif %}
+      <div class="section section-header pb-7">
+        <div class="container">
+          <h1>Zebra Rank</h1>
+          <div class="row">
+            <div class="col-12">
+              <p class="lead mb-5"><em>Zebra Rank</em> is a prototype
+                developed by the
+                <a href="https://ncats.nih.gov/about/center/org/ordr">NCATS Office of 
+                  Rare Diseases Research</a> (ORDR) to suggest relevant
+                rare diseases based on specified phenotypes. To get
+                started, please specify one or more phenotype below.
+                <div class="card bg-primary shadow-soft border-light p-4">
+                  <!-- 
+                  <div class="card-header text-center pb-0">
+                    <h2 class="h4">Phenotypes</h2>
+                  </div>
+                  -->
+                  <div class="card-body">
+                    <form action="#" class="mt-4">
+                      <!-- Form -->
+                      <div class="form-group">
+                        <div class="input-group mb-4">
+                          <input class="form-control"
+                                 id="phenotype-field"
+                                 autocomplete="off"
+                                 placeholder="Enter phenotype (e.g., abnormality of hair pigmentation)"
+                                 type="text" aria-label="phenotype">
+                          <!-- 
+                          <div class="input-group-append">
+                            <button class="btn btn-primary"
+                                    type="button" id="clear-btn">Clear</button>
+                          </div>
+                          -->
+                        </div>
+                      </div>
+                    </form>                    
+                    <table class="table shadow-soft rounded" id="phenotype-table"
+                           table-bordered="false">
+                    </table>
+
+                    <div style="margin-top:2em">
+                      <button class="btn btn-primary mr-2" id="search-btn"
+                              type="submit">Search</button>
+                      <button class="btn btn-primary mr-2" id="clear-btn"
+                              type="submit">Clear</button>
+                    </div>
+                  </div>
+                </div>
+          </div>
+        </div>
+      </div><!-- End of Hero section -->
+      <div class="section section-lg">
+        <div class="container">
+          {% block content %}{% endblock %}
+        </div>
+      </div>
+    </main>
+
+    <script src='{% static "vendor/jquery/dist/jquery.min.js" %}'></script>
+    <script src='{% static "vendor/popper.js/dist/umd/popper.min.js" %}'></script>
+    <script src='{% static "vendor/bootstrap/dist/js/bootstrap.min.js" %}'></script>
+    <script src='{% static "vendor/headroom.js/dist/headroom.min.js" %}'></script>
+    <script src='{% static "vendor/onscreen/dist/on-screen.umd.min.js" %}'></script>
+    <script src='{% static "vendor/nouislider/distribute/nouislider.min.js" %}'></script>
+    <script src='{% static "vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js" %}'></script>
+    <script src='{% static "vendor/waypoints/lib/jquery.waypoints.min.js" %}'></script>
+    <script src='{% static "vendor/jarallax/dist/jarallax.min.js" %}'></script>
+    <script src='{% static "vendor/jquery.counterup/jquery.counterup.min.js" %}'></script>
+    <script src='{% static "vendor/jquery-countdown/dist/jquery.countdown.min.js" %}'></script>
+    <script src='{% static "vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js" %}'></script>
+    <script src='{% static "vendor/prismjs/prism.js" %}'></script>
+    <script async defer="defer"
+            src="https://buttons.github.io/buttons.js"></script>
+    <script src='{% static "js/bootstrap-autocomplete.min.js" %}'></script>
+    <script src='{% static "js/bootstrap-table.min.js" %}'></script>
+    <script src='{% static "js/neumorphism.js" %}'></script>
+    {% block scripts %}
+    <script>
+     function empty_table () {
+       $('#phenotype-table').bootstrapTable('destroy');
+       $('#phenotype-table').bootstrapTable({
+         columns: [{
+           field: 'id',
+           title: 'HPO ID'
+         }, {
+           field: 'text',
+           title: 'HPO Name'
+         }]
+       });       
+     }
+     
+     $(document).ready(function(){
+       $('[data-toggle="tooltip"]').tooltip()
+       $('#phenotype-field').autoComplete({
+         resolver: 'custom',
+         events: {
+           search: function (query, callback) {
+             console.log('searching for...'+query);
+             var url = '{% url "api.phenotypes" name="XXX" %}'.replace('XXX', query);
+             $.ajax({
+               url: url,
+               method: 'GET',
+               error: function(xhr, status, error) {
+                 console.log("ERROR: code="+xhr.stats+" status="+status+" "+url);
+               }
+             }).done(function (res) {
+               //console.log('matched...'+JSON.stringify(res));
+               callback(res.results);
+             });
+           }
+         }
+       });
+
+       $('#phenotype-field').on('autocomplete.select', function (evt, item) {
+         console.log('item selected...'+JSON.stringify(item));
+         $('#phenotype-table').bootstrapTable('append', item);
+       });
+
+       $('#clear-btn').on('click', function() {
+         console.log('clearing phenotype field...');
+         empty_table();
+       });
+       
+       empty_table();
+     });
+    </script>
+    {% endblock %}
+  </body>
+</html>
