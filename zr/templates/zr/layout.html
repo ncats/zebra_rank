@@ -10,12 +10,14 @@
     {% else %}
     <meta property="og:title" content="NCATS Zebra Rank"/>
     {% endif %}
+    {% load static %}
+    <meta property="og:image" content="{% static 'zebra.png' %}">
     <meta property="og:description" content="NCATS Zebra Rank is a
-                    prototype to rank rare diseases based on specified phenotypes."/>
+                      prototype to rank rare diseases based on specified phenotypes."/>
     <meta property="og:site_name" content="NCATS Zebra Rank"/>
     <link rel="icon" type="image/vnd.microsoft.icon"
           href="https://ncats.nih.gov/sites/all/themes/ncats-2014/favicon.ico">
-    {% load static %}
+
     <link type="text/css" href="{% static 'vendor/@fortawesome/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
     <link type="text/css" href="{% static 'css/bootstrap-table.min.css' %}" rel="stylesheet">
     <link type="text/css" href="{% static 'css/neumorphism.css' %}" rel="stylesheet">
@@ -68,7 +70,12 @@
       {% endif %}
       <div class="section section-header pb-7">
         <div class="container">
-          <h1>Zebra Rank</h1>
+          <div class="row justify-content-center">
+            <div class="col-12 text-center">
+              <img width="15%" src="{% static 'zebra.png' %}">
+              <h1 class="display-2 mb-4">Zebra Rank</h1>
+            </div>
+          </div>
           <div class="row">
             <div class="col-12">
               <p class="lead mb-5"><em>Zebra Rank</em> is a prototype
