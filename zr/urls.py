@@ -5,6 +5,7 @@ from . import api, views
 apipatterns = [
     path(r'', api.index, name='api.index'),
     path(r'phenotypes/<name>', api.phenotypes, name='api.phenotypes'),
+    path(r'zrank', api.zebra_rank, name='api.zrank'),
 ]
 
 urlpatterns = [

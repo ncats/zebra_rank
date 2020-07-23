@@ -119,7 +119,17 @@
       </div><!-- End of Hero section -->
       <div class="section section-lg">
         <div class="container">
-          {% block content %}{% endblock %}
+          <div class="card bg-primary shadow-soft border-light p-4">
+            <div class="card-header text-center pb-0">
+              <h2 class="h4">Relevant Rare Diseases</h2>
+            </div>
+            <div class="card-body">
+              <table class="table shadow-soft rounded" id="zebra-table"
+                     table-bordered="false">
+              </table>              
+            </div>              
+            {% block content %}{% endblock %}
+          </div>
         </div>
       </div>
     </main>
@@ -144,7 +154,7 @@
     <script src='{% static "js/neumorphism.js" %}'></script>
     {% block scripts %}
     <script>
-     function empty_table () {
+     function empty_phenotype_table () {
        $('#phenotype-table').bootstrapTable('destroy');
        $('#phenotype-table').bootstrapTable({
          columns: [{
@@ -155,6 +165,25 @@
            title: 'HPO Name'
          }]
        });       
+     }
+
+     function empty_zebra_table () {
+       $('#zebra-table').bootstrapTable('destroy');
+       $('#zebra-table').bootstrapTable({
+         columns: [{
+           field: 'id',
+           title: 'ID'
+         },{
+           field: 'name',
+           title: 'Disease Name'
+         },{
+           field: 'score',
+           title: 'Score'
+         },{
+           field: 'phenotypes',
+           title: 'Matching Phenotypes'
+         }]
+       });
      }
      
      $(document).ready(function(){
@@ -186,10 +215,38 @@
 
        $('#clear-btn').on('click', function() {
          console.log('clearing phenotype field...');
-         empty_table();
+         empty_phenotype_table();
+         empty_zebra_table();
+       });
+
+       $('#search-btn').on('click', function() {
+         let data = $('#phenotype-table').bootstrapTable('getData');
+         let phenotypes = data.map(d => d.id);
+         console.log('submitting phenotypes...'+phenotypes);
+         $.ajax({
+           url: '{% url "api.zrank" %}',
+           method: 'POST',
+           data: JSON.stringify(phenotypes),
+           contentType: 'application/json',
+           error: function(xhr, status, error) {
+             console.log("ERROR: code="+xhr.stats+" status="+status+" "+url);
+           }
+         }).done(function (res) {
+           empty_zebra_table();
+           console.log('rank results...'+JSON.stringify(res));
+           for (var i = 0; i < Math.min(res.length, 100); ++i) {
+             let r = res[i];
+             let data = { id: r.disease.id,
+                          name: r.disease.name,
+                          score: r.score,
+                          phenotypes: r.matched_phenotypes};
+             $('#zebra-table').bootstrapTable('append', data);
+           }
+         });
        });
        
-       empty_table();
+       empty_phenotype_table();
+       empty_zebra_table();
      });
     </script>
     {% endblock %}
