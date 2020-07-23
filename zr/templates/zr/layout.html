@@ -26,7 +26,7 @@
       <nav id="navbar-main" aria-label="Primary navigation"
            class="navbar navbar-main navbar-expand-lg navbar-theme-primary headroom navbar-light">
         <div class="container position-relative">
-          <a class="navbar-brand shadow-soft py-2 px-3 
+          <a class="navbar-brand shadow-soft py-2 px-3
                     rounded border border-light mr-lg-4"
              href="https://ncats.nih.gov">
             <img class="navbar-brand"
@@ -38,7 +38,7 @@
               <div class="row">
                 <div class="col-6 collapse-brand">
                   <a href="https://ncats.nih.gov"
-                     class="navbar-brand shadow-soft py-2 px-3 rounded 
+                     class="navbar-brand shadow-soft py-2 px-3 rounded
                            border border-light">
                     <img src="https://ncats.nih.gov/sites/all/themes/ncats-2014/images/assets/ncats-logo.png" alt="NCATS Logo">
                   </a>
@@ -73,12 +73,16 @@
             <div class="col-12">
               <p class="lead mb-5"><em>Zebra Rank</em> is a prototype
                 developed by the
-                <a href="https://ncats.nih.gov/about/center/org/ordr">NCATS Office of 
+                <a href="https://ncats.nih.gov/about/center/org/ordr">NCATS Office of
                   Rare Diseases Research</a> (ORDR) to suggest relevant
                 rare diseases based on specified phenotypes. To get
-                started, please specify one or more phenotype below.
+                started, please specify one or more phenotype below. </p>
+              <p class="lead mb-5">After entering phenotypes, possible disease matches will appear below.
+                The score assigned to each disease is an indicator of how strong of a match it is to the given phenotypes.
+                This is based on the number of matching phenotypes as well as the
+                how specific each phenotype may be to each disease. </p>
                 <div class="card bg-primary shadow-soft border-light p-4">
-                  <!-- 
+                  <!--
                   <div class="card-header text-center pb-0">
                     <h2 class="h4">Phenotypes</h2>
                   </div>
@@ -93,7 +97,7 @@
                                  autocomplete="off"
                                  placeholder="Enter phenotype (e.g., abnormality of hair pigmentation)"
                                  type="text" aria-label="phenotype">
-                          <!-- 
+                          <!--
                           <div class="input-group-append">
                             <button class="btn btn-primary"
                                     type="button" id="clear-btn">Clear</button>
@@ -101,7 +105,7 @@
                           -->
                         </div>
                       </div>
-                    </form>                    
+                    </form>
                     <table class="table shadow-soft rounded" id="phenotype-table"
                            table-bordered="false">
                     </table>
@@ -154,9 +158,9 @@
            field: 'text',
            title: 'HPO Name'
          }]
-       });       
+       });
      }
-     
+
      $(document).ready(function(){
        $('[data-toggle="tooltip"]').tooltip()
        $('#phenotype-field').autoComplete({
@@ -188,7 +192,7 @@
          console.log('clearing phenotype field...');
          empty_table();
        });
-       
+
        empty_table();
      });
     </script>
