@@ -1,15 +1,21 @@
-import json, math
+import json, math, logging
+
+logger = logging.getLogger(__name__)
 
 # loading disease and phenotype weights
 diseases = {}
 with open('weights_disease.json') as f:
     diseases = json.load(f)
-    print('%d disease weights loaded!' % len(diseases))
+    for d in diseases.values():
+        id = int(d['id'][d['id'].index(':')+1:])
+        name = d['name'].lower().replace(' ', '-')
+        d['url'] = '%d/%s' % (id, name)
+    logger.debug('%d disease weights loaded!' % len(diseases))
 
 phenotypes = {}
 with open('weights_phenotype.json') as f:
     phenotypes = json.load(f)
-    print('%d phenotype weights loaded!' % len(phenotypes))
+    logger.debug('%d phenotype weights loaded!' % len(phenotypes))
 
 
 def rank_phenotypes_weighted_tfidf2(phenos):
