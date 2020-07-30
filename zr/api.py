@@ -5,8 +5,22 @@ from . import rank_phenotypes as rp
 
 logger = logging.getLogger(__name__)
 
+ORPHANET = rp.ZebraRank('weights_disease_S_ORDO_ORPHANET.json',
+                        'weights_phenotype_S_ORDO_ORPHANET.json')
+GARD = rp.ZebraRank('weights_disease_S_GARD.json',
+                    'weights_phenotype_S_GARD.json')
+
+data_sources = {
+    'orphanet': ORPHANET,
+    'gard': GARD
+}
+
 def index(request):
     return HttpResponse('This is the API for ZebraRank', status=200)
+
+def sources(request):
+    return HttpResponse(json.dumps(list(data_sources.keys()), indent=2),
+                        content_type='application/json', status=200)
 
 def phenotypes(request, name):
     max = 10
@@ -18,8 +32,8 @@ def phenotypes(request, name):
 
     name = name.lower()
     matches = []
-    for hp in rp.phenotypes.values():
-#        print(hp)
+    for hp in rp.ZebraRank.PHENOTYPES.values():
+        #        print(hp)
         phenotype = hp['name']
         match = None
         if isinstance(phenotype, list):
@@ -58,7 +72,7 @@ def phenotypes(request, name):
                         content_type='application/json', status=200)
 
 @csrf_exempt
-def zebra_rank(request):
+def zebra_rank(request, source):
     phenotypes = []
     if request.method == 'GET':
         if 'phenotypes' in request.GET:
@@ -69,9 +83,16 @@ def zebra_rank(request):
         except:
             logger.debug("Unexpected error: %s" % sys.exc_info())
             return HttpResponse('Content is not JSON', status=400)
+
+    source = source.lower()
+    if source == 'gard' or source == 'orphanet':
+        pass
+    else:
+        return HttpResponse('Unknown source: %s' % source, status=404)
+    
     results = []
     if len(phenotypes) > 0:
-        results = rp.rank_phenotypes_weighted_tfidf(phenotypes)
+        results = data_sources[source].rank_phenotypes_weighted_tfidf(phenotypes)
         results = [{'score': r[0],
                     'disease': r[1],
                     'matched_phenotypes': list(r[2])} for r in results]

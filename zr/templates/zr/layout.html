@@ -144,9 +144,39 @@
               <h2 class="h4">Relevant Rare Diseases</h2>
             </div>
             <div class="card-body">
-              <table class="table shadow-soft rounded" id="zebra-table"
-                     table-bordered="false">
-              </table>
+              <div class="nav-wrapper position-relative mb-4">
+                <ul class="nav nav-pills flex-column flex-sm-row" id="tabs-text" role="tablist">
+                  <li class="nav-item mr-sm-3 mr-md-0">
+                    <a class="nav-link mb-sm-3 mb-md-0 active" 
+                       id="tabs-text-1-tab" data-toggle="tab" 
+                       href="#tabs-gard" role="tab" aria-controls="tabs-text-1" 
+                       aria-selected="true">GARD</a>
+                  </li>
+                  <li class="nav-item mr-sm-3 mr-md-0">
+                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-text-2-tab" 
+                       data-toggle="tab" href="#tabs-orphanet" role="tab" 
+                       aria-controls="tabs-text-2" aria-selected="false">Orphanet</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="card shadow-inset bg-primary border-light p-4 rounded">
+                <div class="card-body p-0">
+                  <div class="tab-content" id="tabcontent-gard">
+                    <div class="tab-pane fade show active" id="tabs-gard" 
+                         role="tabpanel" aria-labelledby="tabs-text-1-tab">
+                      <table class="table shadow-soft rounded" id="zebra-table-gard"
+                             table-bordered="false">
+                      </table>
+                    </div>
+                    <div class="tab-pane fade" id="tabs-orphanet" role="tabpanel" 
+                         aria-labelledby="tabs-text-2-tab">
+                      <table class="table shadow-soft rounded" id="zebra-table-orphanet"
+                             table-bordered="false">
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             {% block content %}{% endblock %}
           </div>
@@ -174,110 +204,130 @@
     <script src='{% static "js/neumorphism.js" %}'></script>
     {% block scripts %}
     <script>
-    function empty_phenotype_table () {
-        $('#phenotype-table').bootstrapTable('destroy');
-        $('#phenotype-table').bootstrapTable({
-            columns: [{
-                field: 'id',
-                title: 'ID'
-            }, {
-                field: 'text',
-                title: 'Phenotype Name'
-            }]
-        });
-    }
+     function empty_phenotype_table () {
+       $('#phenotype-table').bootstrapTable('destroy');
+       $('#phenotype-table').bootstrapTable({
+         columns: [{
+           field: 'id',
+           title: 'ID'
+         }, {
+           field: 'text',
+           title: 'Phenotype Name'
+         }]
+       });
+     }
 
-    function empty_zebra_table () {
-        $('#zebra-table').bootstrapTable('destroy');
-        $('#zebra-table').bootstrapTable({
-            columns: [{
-                field: 'id',
-                title: 'ID'
-            },{
-                field: 'name',
-                title: 'Disease Name'
-            },{
-                field: 'score',
-                title: 'Score'
-            },{
-                field: 'phenotypes',
-                title: 'Matching Phenotypes'
-            }]
-        });
-    }
+     function empty_zebra_table (id) {
+       $(id).bootstrapTable('destroy');
+       $(id).bootstrapTable({
+         columns: [{
+           field: 'id',
+           title: 'ID'
+         },{
+           field: 'name',
+           title: 'Disease Name'
+         },{
+           field: 'score',
+           title: 'Score'
+         },{
+           field: 'phenotypes',
+           title: 'Matching Phenotypes'
+         }]
+       });
+     }
 
-    $(document).ready(function(){
-        $('[data-toggle="tooltip"]').tooltip()
-        $('#phenotype-field').autoComplete({
-            resolver: 'custom',
-            events: {
-                search: function (query, callback) {
-                    console.log('searching for...'+query);
-                    var url = '{% url "api.phenotypes" name="XXX" %}'
-                        .replace('XXX', query);
-                    $.ajax({
-                        url: url,
-                        method: 'GET',
-                        error: function(xhr, status, error) {
-                            console.log("ERROR: code="+xhr.stats
-                                        +" status="+status+" "+url);
-                        }
-                    }).done(function (res) {
-                        //console.log('matched...'+JSON.stringify(res));
-                        callback(res.results);
-                    });
-                }
-            }
-        });
-      
-      $('#phenotype-field').on('autocomplete.select', function (evt, item) {
-          console.log('item selected...'+JSON.stringify(item));
-          item.text = '<a target="zebra" href="https://hpo.jax.org/app/browse/term/'
-              +item.id+'">'+item.text
-              +' <span class="fas fa-external-link-alt"></span></a>';
-          $('#phenotype-table').bootstrapTable('append', item);
-      });
+     function empty_zebra_tables () {
+       empty_zebra_table('#zebra-table-gard');
+       empty_zebra_table('#zebra-table-orphanet');
+     }
 
-      $('#clear-field-btn').on('click', function() {
-          $('#phenotype-field').val('');
-      });
+     function create_gard_link (disease) {
+       return '<a target="zebra" href="https://rarediseases.info.nih.gov/diseases/'
+             +disease.url+'">'+disease.name
+             +' <span class="fas fa-external-link-alt"></span></a>';
+     }
 
-      $('#clear-btn').on('click', function() {
-          console.log('clearing phenotype field...');
-          empty_phenotype_table();
-          empty_zebra_table();
-      });
+     function create_orphanet_link (disease) {
+       return '<a target="zebra" href="https://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=en&Expert='+disease.url+'">'+disease.name
+             +' <span class="fas fa-external-link-alt"></span></a>';
+     }
 
-      $('#search-btn').on('click', function() {
-          let data = $('#phenotype-table').bootstrapTable('getData');
-          let phenotypes = data.map(d => d.id);
-          console.log('submitting phenotypes...'+phenotypes);
-          $.ajax({
-              url: '{% url "api.zrank" %}',
-              method: 'POST',
-              data: JSON.stringify(phenotypes),
-              contentType: 'application/json',
-              error: function(xhr, status, error) {
-                  console.log("ERROR: code="+xhr.stats+" status="+status+" "+url);
-              }
-          }).done(function (res) {
-              empty_zebra_table();
-              console.log('rank results...'+JSON.stringify(res));
-              for (var i = 0; i < Math.min(res.length, 100); ++i) {
-                  let r = res[i];
-                  let data = { id: r.disease.id,
-                               name: '<a target="zebra" href="https://rarediseases.info.nih.gov/diseases/'+r.disease.url+'">'+r.disease.name
-                               +' <span class="fas fa-external-link-alt"></span></a>',
-                               score: r.score.toFixed(3),
-                               phenotypes: r.matched_phenotypes};
-                  $('#zebra-table').bootstrapTable('append', data);
-              }
-          });
-      });
+     function search_phenotypes(source, phenotypes, link) {
+       $.ajax({
+         url: '{% url "api.zrank" source="XXX" %}'.replace('XXX', source),
+         method: 'POST',
+         data: JSON.stringify(phenotypes),
+         contentType: 'application/json',
+         error: function(xhr, status, error) {
+           console.log("ERROR: code="+xhr.stats+" status="+status+" "+url);
+         }
+       }).done(function (res) {
+         var id = '#zebra-table-'+source;
+         empty_zebra_table(id);
+         console.log('rank results...'+JSON.stringify(res));
+         for (var i = 0; i < Math.min(res.length, 100); ++i) {
+           let r = res[i];
+           let data = { id: r.disease.id,
+                        name: link(r.disease),
+                        score: r.score.toFixed(3),
+                        phenotypes: r.matched_phenotypes};
+           $(id).bootstrapTable('append', data);
+         }
+       });
+     }
+
+     $(document).ready(function(){
+       $('[data-toggle="tooltip"]').tooltip()
+       $('#phenotype-field').autoComplete({
+         resolver: 'custom',
+         events: {
+           search: function (query, callback) {
+             console.log('searching for...'+query);
+             var url = '{% url "api.phenotypes" name="XXX" %}'.replace('XXX', query);
+             $.ajax({
+               url: url,
+               method: 'GET',
+               error: function(xhr, status, error) {
+                 console.log("ERROR: code="+xhr.stats
+                            +" status="+status+" "+url);
+               }
+             }).done(function (res) {
+               //console.log('matched...'+JSON.stringify(res));
+               callback(res.results);
+             });
+           }
+         }
+       });
+       
+       $('#phenotype-field').on('autocomplete.select', function (evt, item) {
+         console.log('item selected...'+JSON.stringify(item));
+         item.text = '<a target="zebra" href="https://hpo.jax.org/app/browse/term/'
+                    +item.id+'">'+item.text
+                    +' <span class="fas fa-external-link-alt"></span></a>';
+         $('#phenotype-table').bootstrapTable('append', item);
+       });
+
+       $('#clear-field-btn').on('click', function() {
+         $('#phenotype-field').val('');
+       });
+
+       $('#clear-btn').on('click', function() {
+         console.log('clearing phenotype field...');
+         empty_phenotype_table();
+         empty_zebra_tables();
+       });
+
+       $('#search-btn').on('click', function() {
+         let data = $('#phenotype-table').bootstrapTable('getData');
+         let phenotypes = data.map(d => d.id);
+         console.log('submitting phenotypes...'+phenotypes);
+         search_phenotypes('gard', phenotypes, create_gard_link);
+         search_phenotypes('orphanet', phenotypes, create_orphanet_link);
+       });
 
        empty_phenotype_table();
-       empty_zebra_table();
-    });
+       empty_zebra_tables();
+     });
     </script>
     {% endblock %}
   </body>
