@@ -38,7 +38,7 @@
           <div class="d-flex align-items-center">
             <a href="https://github.com/ncats/zebra_rank"" target="_blank"
                class="btn btn-primary text-secondary mr-3">
-              <i class="fas fa-code mr-2"></i> CODE</a> 
+              <i class="fas fa-code mr-2"></i> CODE</a>
           </div>
           <div class="navbar-collapse collapse" id="navbar_global">
             <div class="navbar-collapse-header">
@@ -89,7 +89,7 @@
                 developed by the
                 <a href="https://ncats.nih.gov/about/center/org/ordr">NCATS Office of
                   Rare Diseases Research</a> (ORDR) to suggest relevant
-                rare diseases based on specified phenotypes (i.e., symptons 
+                rare diseases based on specified phenotypes (i.e., symptons
                 and/or clinical features). To get
                 started, please specify one or more phenotype below. </p>
                 <div class="card bg-primary shadow-soft border-light p-4">
@@ -117,7 +117,7 @@
                         </div>
                       </div>
                     </form>
-                    
+
                     <table class="table shadow-soft rounded" id="phenotype-table"
                            table-bordered="false">
                     </table>
@@ -139,6 +139,10 @@
             The score assigned to each disease is an indicator of how strong of a match it is to the given phenotypes.
             This is based on the number of matching phenotypes as well as the
             how specific each phenotype may be to each disease. </p>
+          <p class="lead mb-5">You can also select what ontology to see results from.
+            A ontology is knowledge base of standardized disease terms and their attributes.
+            Different ontologies may differ in how phenotypes and diseases are connected,
+            which  will change how diseases are ranked. </p>
           <div class="card bg-primary shadow-soft border-light p-4">
             <div class="card-header text-center pb-0">
               <h2 class="h4">Relevant Rare Diseases</h2>
@@ -147,14 +151,17 @@
               <div class="nav-wrapper position-relative mb-4">
                 <ul class="nav nav-pills flex-column flex-sm-row" id="tabs-text" role="tablist">
                   <li class="nav-item mr-sm-3 mr-md-0">
-                    <a class="nav-link mb-sm-3 mb-md-0 active" 
-                       id="tabs-text-1-tab" data-toggle="tab" 
-                       href="#tabs-gard" role="tab" aria-controls="tabs-text-1" 
+                    <p>Select ontology: </p>
+                  </li>
+                  <li class="nav-item mr-sm-3 mr-md-0">
+                    <a class="nav-link mb-sm-3 mb-md-0 active"
+                       id="tabs-text-1-tab" data-toggle="tab"
+                       href="#tabs-gard" role="tab" aria-controls="tabs-text-1"
                        aria-selected="true">GARD</a>
                   </li>
                   <li class="nav-item mr-sm-3 mr-md-0">
-                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-text-2-tab" 
-                       data-toggle="tab" href="#tabs-orphanet" role="tab" 
+                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-text-2-tab"
+                       data-toggle="tab" href="#tabs-orphanet" role="tab"
                        aria-controls="tabs-text-2" aria-selected="false">Orphanet</a>
                   </li>
                 </ul>
@@ -162,13 +169,13 @@
               <div class="card shadow-inset bg-primary border-light p-4 rounded">
                 <div class="card-body p-0">
                   <div class="tab-content" id="tabcontent-gard">
-                    <div class="tab-pane fade show active" id="tabs-gard" 
+                    <div class="tab-pane fade show active" id="tabs-gard"
                          role="tabpanel" aria-labelledby="tabs-text-1-tab">
                       <table class="table shadow-soft rounded" id="zebra-table-gard"
                              table-bordered="false">
                       </table>
                     </div>
-                    <div class="tab-pane fade" id="tabs-orphanet" role="tabpanel" 
+                    <div class="tab-pane fade" id="tabs-orphanet" role="tabpanel"
                          aria-labelledby="tabs-text-2-tab">
                       <table class="table shadow-soft rounded" id="zebra-table-orphanet"
                              table-bordered="false">
@@ -298,7 +305,7 @@
            }
          }
        });
-       
+
        $('#phenotype-field').on('autocomplete.select', function (evt, item) {
          console.log('item selected...'+JSON.stringify(item));
          item.text = '<a target="zebra" href="https://hpo.jax.org/app/browse/term/'
